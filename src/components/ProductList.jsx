@@ -1,4 +1,5 @@
 import ProductCard from "./ProductCard";
+import { Pencil, Power } from "lucide-react";
 
 function ProductList({ products, token, role, handleEditClick, handleDeleteProduct }) {
 
@@ -9,30 +10,35 @@ function ProductList({ products, token, role, handleEditClick, handleDeleteProdu
     return (
         <div className="product-list">
             {products.map(product => (
-                <div key={product.id}>
-                    <ProductCard
-                        name={product.name}
-                        price={product.price}
-                        categoryName={product.categoryName}
-                    />
+                <div key={product.id} className="product-item">
 
-                    {role === "Admin" && (
-                        <div className="product-actions">
-                            <button
-                                className="button button-edit"
-                                onClick={() => handleEditClick(product)}
-                            >
-                                Editar
-                            </button>
+                    <div className="product-card-wrapper">
+                        <ProductCard
+                            name={product.name}
+                            price={product.price}
+                            categoryName={product.categoryName}
+                        />
 
-                            <button
-                                className="button button-delete"
-                                onClick={() => handleDeleteProduct(product.id)}
-                            >
-                                Desactivar
-                            </button>
-                        </div>
-                    )}
+                        {role === "Admin" && (
+                            <div className="product-actions">
+                                <button
+                                    className="button button-edit button-icon"
+                                    onClick={() => handleEditClick(product)}
+                                >
+                                    <Pencil size={16} />
+                                    Editar
+                                </button>
+
+                                <button
+                                    className="button button-delete button-icon"
+                                    onClick={() => handleDeleteProduct(product.id)}
+                                >
+                                    <Power size={16} />
+                                    Desactivar
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             ))}
         </div>

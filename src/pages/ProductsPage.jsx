@@ -9,6 +9,7 @@ import {
 import ProductForm from "../components/ProductForm";
 import ProductList from "../components/ProductList";
 import Pagination from "../components/Pagination";
+import { LogOut } from "lucide-react";
 
 function ProductsPage({ token, role, handleLogout }) {
   const [products, setProducts] = useState([]);
@@ -77,40 +78,63 @@ function ProductsPage({ token, role, handleLogout }) {
   if (loading) return <p>Cargando...</p>;
 
   return (
-    <div className="container">
+    <div className="dashboard">
+      <div className="dashboard-container">
 
-      <div className="header">
-        <h1 className="title">Productos</h1>
+        <div className="dashboard-header">
+          <div>
+            <h1 className="title">Productos</h1>
+            <p className="subtitle">Gestiona los productos del restaurante</p>
+          </div>
 
-        <button className="button button-delete" onClick={handleLogout}>
-          Cerrar sesión
-        </button>
+          <div className="session-box">
+            <span className="role-badge">{role}</span>
+
+            <button className="button button-delete button-icon" onClick={handleLogout}>
+              <LogOut size={16} />
+              Cerrar sesión
+            </button>
+          </div>
+        </div>
+
+        {role === "Admin" && (
+          <div className="form-card">
+            <h2 className="section-title">
+              {editingProductId === null ? "Crear producto" : "Editar producto"}
+            </h2>
+
+            <ProductForm
+              name={name}
+              price={price}
+              setName={setName}
+              setPrice={setPrice}
+              editingProductId={editingProductId}
+              handleSaveProduct={handleSaveProduct}
+            />
+          </div>
+        )}
+
+        <div className="products-section">
+          <div className="section-header">
+            <h2 className="section-title">Lista de productos</h2>
+            <span className="products-count">{totalCount} productos</span>
+          </div>
+
+          <ProductList
+            products={products}
+            role={role}
+            handleEditClick={handleEditClick}
+            handleDeleteProduct={handleDeleteProduct}
+          />
+
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            setPage={setPage}
+          />
+        </div>
+
       </div>
-
-      {role === "Admin" && (
-        <ProductForm
-          name={name}
-          price={price}
-          setName={setName}
-          setPrice={setPrice}
-          editingProductId={editingProductId}
-          handleSaveProduct={handleSaveProduct}
-        />
-      )}
-
-      <ProductList
-        products={products}
-        role={role}
-        handleEditClick={handleEditClick}
-        handleDeleteProduct={handleDeleteProduct}
-      />
-
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        setPage={setPage}
-      />
-
     </div>
   );
 }
