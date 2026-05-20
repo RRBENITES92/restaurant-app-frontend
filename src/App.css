@@ -1,0 +1,130 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f3f4f6;
+  font-family: Arial, sans-serif;
+  color: #111827;
+}
+
+.container {
+  max-width: 1050px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 20px;
+}
+
+.title {
+  font-size: 36px;
+  margin: 0;
+}
+
+.session-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 18px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.form {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.input {
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 15px;
+  min-width: 220px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.button {
+  padding: 11px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.button-primary {
+  background-color: #2563eb;
+  color: white;
+}
+
+.button-edit {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.button-delete {
+  background-color: #dc2626;
+  color: white;
+}
+
+.button:disabled {
+  background-color: #d1d5db;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.message {
+  text-align: center;
+  padding: 12px;
+  margin-bottom: 18px;
+  background-color: #dcfce7;
+  color: #166534;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.product-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.product-list {
+  display: grid;
+  gap: 18px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 30px;
+  background: white;
+  border-radius: 14px;
+  color: #6b7280;
+}
