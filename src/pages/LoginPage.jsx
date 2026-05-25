@@ -1,15 +1,17 @@
-import { useState } from "react";
-import { login } from "../api/authApi";
 import LoginForm from "../components/LoginForm";
-import { jwtDecode } from "jwt-decode";
+import { useState } from "react";
+import { login as loginApi } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-function LoginPage({ setToken, setRole }) {
+function LoginPage() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loadingLogin, setLoadingLogin] = useState(false);
+
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -18,13 +20,9 @@ function LoginPage({ setToken, setRole }) {
         setLoadingLogin(true);
 
         try {
-            const receivedToken = await login(username, password);
+            const receivedToken = await loginApi(username, password);
 
-            localStorage.setItem("token", receivedToken);
-            setToken(receivedToken);
-
-            const decoded = jwtDecode(receivedToken);
-            setRole(decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]);
+            login(receivedToken);
 
             navigate("/products");
         } catch (error) {

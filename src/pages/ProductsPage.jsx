@@ -10,8 +10,9 @@ import ProductForm from "../components/ProductForm";
 import ProductList from "../components/ProductList";
 import Pagination from "../components/Pagination";
 import { LogOut } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
-function ProductsPage({ token, role, handleLogout }) {
+function ProductsPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
@@ -20,6 +21,7 @@ function ProductsPage({ token, role, handleLogout }) {
   const [pageSize] = useState(5);
   const [totalCount, setTotalCount] = useState(0);
   const [editingProductId, setEditingProductId] = useState(null);
+  const { token, role, isAdmin, logout } = useAuth();
 
   const fetchProducts = async () => {
     try {
@@ -51,9 +53,9 @@ function ProductsPage({ token, role, handleLogout }) {
     };
 
     if (editingProductId === null) {
-      await createProduct(productData);
+      await createProduct(productData, token);
     } else {
-      await updateProduct(editingProductId, productData);
+      await updateProduct(editingProductId, productData, token);
     }
 
     await fetchProducts();
@@ -70,8 +72,7 @@ function ProductsPage({ token, role, handleLogout }) {
   };
 
   const handleDeleteProduct = async (id) => {
-    const savedToken = localStorage.getItem("token");
-    await deactivateProduct(id, savedToken);
+    await deactivateProduct(id, token);
     await fetchProducts();
   };
 
@@ -90,14 +91,14 @@ function ProductsPage({ token, role, handleLogout }) {
           <div className="session-box">
             <span className="role-badge">{role}</span>
 
-            <button className="button button-delete button-icon" onClick={handleLogout}>
+            <button className="button button-delete button-icon" onClick={logout}>
               <LogOut size={16} />
               Cerrar sesión
             </button>
           </div>
         </div>
 
-        {role === "Admin" && (
+        {isAdmin && (
           <div className="form-card">
             <h2 className="section-title">
               {editingProductId === null ? "Crear producto" : "Editar producto"}

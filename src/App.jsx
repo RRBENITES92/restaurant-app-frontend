@@ -1,33 +1,24 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useState } from "react";
 import LoginPage from "./pages/LoginPage";
 import ProductsPage from "./pages/ProductsPage";
+import { useAuth } from "./context/AuthContext";
 import "./App.css";
 
 function App() {
-  const [token, setToken] = useState(localStorage.getItem("token"));
-  const [role, setRole] = useState(null);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
-    setRole(null);
-  };
+  const { isAuthenticated } = useAuth();
 
   return (
     <BrowserRouter>
       <Routes>
 
-        <Route
-          path="/login"
-          element={<LoginPage setToken={setToken} setRole={setRole} />}
-        />
+        <Route path="/login" element={<LoginPage />} />
 
         <Route
           path="/products"
           element={
-            token
-              ? <ProductsPage token={token} role={role} handleLogout={handleLogout} />
+            isAuthenticated
+              ? <ProductsPage />
               : <Navigate to="/login" />
           }
         />

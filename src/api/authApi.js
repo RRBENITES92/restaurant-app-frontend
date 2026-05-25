@@ -1,11 +1,8 @@
-const API_URL = "http://localhost:5034/api/auth";
+import { apiFetch } from "./apiClient";
 
 export const login = async (username, password) => {
-  const res = await fetch(`${API_URL}/login`, {
+  const res = await apiFetch(`/auth/login`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
     body: JSON.stringify({
       username,
       password
