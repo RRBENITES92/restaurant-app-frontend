@@ -1,26 +1,66 @@
 # Restaurant App Frontend
 
-Frontend desarrollado con React + Vite para consumir una API REST en .NET.
+Frontend desarrollado con React y Vite para consumir una API REST construida en ASP.NET Core.
 
-## Tecnologías
-- React
-- Vite
-- React Router
-- JWT
-- CSS
-- API REST .NET
+## Features
 
-## Funcionalidades
-- Login con JWT
-- Control de roles
-- Listado de productos
-- Crear productos
-- Editar productos
-- Desactivar productos
-- Paginación
-- Protección de rutas
+* JWT Authentication
+* Role-Based Authorization (Admin / User)
+* Protected Routes with React Router
+* Product CRUD Operations
+* Soft Delete Support
+* Pagination
+* Centralized API Client
+* Authentication Context (AuthContext)
+* Loading States
+* Toast Notifications
+* Confirmation Modal
+* Responsive Dashboard UI
 
-## Cómo ejecutar
+## Tech Stack
 
+* React
+* Vite
+* React Router
+* Context API
+* JavaScript (ES6+)
+* CSS
+* JWT Authentication
+* REST API
+
+## Project Structure
+
+```text
+src/
+├── api/
+├── components/
+├── context/
+├── pages/
+└── assets/
+```
+
+## Getting Started
+
+Install dependencies:
+
+```bash
 npm install
+```
+
+Run development server:
+
+```bash
 npm run dev
+```
+
+## Backend
+
+This project consumes an ASP.NET Core REST API that provides:
+
+* JWT Authentication
+* Role Management
+* Product Management
+* Pagination
+* Soft Delete
+* Global Exception Handling
+* FluentValidation
