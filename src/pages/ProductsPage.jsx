@@ -1,20 +1,23 @@
-import { useEffect, useState } from "react";
+import ProductForm from "../components/ProductForm";
+import ProductList from "../components/ProductList";
+import Pagination from "../components/Pagination";
+import Toast from "../components/Toast";
+import ConfirmModal from "../components/ConfirmModal";
 import {
   getProducts,
   createProduct,
   updateProduct,
   deactivateProduct
 } from "../api/productApi";
-
-import ProductForm from "../components/ProductForm";
-import ProductList from "../components/ProductList";
-import Pagination from "../components/Pagination";
 import { LogOut } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useEffect, useRef, useState } from "react";
+
 
 function ProductsPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [page, setPage] = useState(1);
@@ -22,6 +25,11 @@ function ProductsPage() {
   const [totalCount, setTotalCount] = useState(0);
   const [editingProductId, setEditingProductId] = useState(null);
   const { token, role, isAdmin, logout } = useAuth();
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const formRef = useRef(null);
+  const [productToDelete, setProductToDelete] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const fetchProducts = async () => {
     try {
@@ -47,39 +55,118 @@ function ProductsPage() {
   const handleSaveProduct = async (e) => {
     e.preventDefault();
 
-    const productData = {
-      name,
-      price: Number(price)
-    };
+    setIsSaving(true);
+    setSuccessMessage("");
+    setErrorMessage("");
 
-    if (editingProductId === null) {
-      await createProduct(productData, token);
-    } else {
-      await updateProduct(editingProductId, productData, token);
+    try {
+      const productData = {
+        name,
+        price: Number(price)
+      };
+
+      if (editingProductId === null) {
+        await createProduct(productData, token);
+        setSuccessMessage("Producto creado correctamente");
+      } else {
+        await updateProduct(editingProductId, productData, token);
+        setSuccessMessage("Producto actualizado correctamente");
+      }
+
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 3000);
+
+      await fetchProducts();
+
+      setName("");
+      setPrice("");
+      setEditingProductId(null);
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Ocurrió un error al guardar el producto");
+
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 3000);
+    } finally {
+      setIsSaving(false);
     }
-
-    await fetchProducts();
-
-    setName("");
-    setPrice("");
-    setEditingProductId(null);
   };
 
   const handleEditClick = (product) => {
     setEditingProductId(product.id);
     setName(product.name);
     setPrice(product.price);
+
+    formRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
   };
 
   const handleDeleteProduct = async (id) => {
-    await deactivateProduct(id, token);
-    await fetchProducts();
+    try {
+      setSuccessMessage("");
+      setErrorMessage("");
+
+      await deactivateProduct(id, token);
+      await fetchProducts();
+
+      setSuccessMessage("Producto desactivado correctamente");
+
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 3000);
+
+    } catch (error) {
+      console.error(error);
+
+      setErrorMessage("No se pudo desactivar el producto");
+
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 3000);
+    }
+  };
+
+  const openDeleteModal = (product) => {
+    setProductToDelete(product);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setProductToDelete(null);
+    setIsDeleteModalOpen(false);
+  };
+
+  const confirmDeleteProduct = async () => {
+    if (!productToDelete) return;
+
+    await handleDeleteProduct(productToDelete.id);
+    closeDeleteModal();
   };
 
   if (loading) return <p>Cargando...</p>;
 
   return (
     <div className="dashboard">
+
+      <Toast
+        message={successMessage || errorMessage}
+        type={successMessage ? "success" : "error"}
+      />
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        title="Desactivar producto"
+        message={`¿Estás seguro de desactivar "${productToDelete?.name}"?`}
+        confirmText="Sí, desactivar"
+        cancelText="Cancelar"
+        onConfirm={confirmDeleteProduct}
+        onCancel={closeDeleteModal}
+      />
+
       <div className="dashboard-container">
 
         <div className="dashboard-header">
@@ -99,7 +186,7 @@ function ProductsPage() {
         </div>
 
         {isAdmin && (
-          <div className="form-card">
+          <div ref={formRef} className="form-card">
             <h2 className="section-title">
               {editingProductId === null ? "Crear producto" : "Editar producto"}
             </h2>
@@ -111,6 +198,7 @@ function ProductsPage() {
               setPrice={setPrice}
               editingProductId={editingProductId}
               handleSaveProduct={handleSaveProduct}
+              isSaving={isSaving}
             />
           </div>
         )}
@@ -125,7 +213,7 @@ function ProductsPage() {
             products={products}
             role={role}
             handleEditClick={handleEditClick}
-            handleDeleteProduct={handleDeleteProduct}
+            handleDeleteProduct={openDeleteModal}
           />
 
           <Pagination

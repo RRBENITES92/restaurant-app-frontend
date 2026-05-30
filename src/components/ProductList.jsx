@@ -31,7 +31,7 @@ function ProductList({ products, token, role, handleEditClick, handleDeleteProdu
 
                                 <button
                                     className="button button-delete button-icon"
-                                    onClick={() => handleDeleteProduct(product.id)}
+                                    onClick={() => handleDeleteProduct(product)}
                                 >
                                     <Power size={16} />
                                     Desactivar
